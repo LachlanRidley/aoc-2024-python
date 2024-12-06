@@ -1,24 +1,47 @@
+import enum
 from typing import Self
 
 
-class Grid[T]:
-    _grid: list[list[T | None]]
+def in_bounds(grid: list[list[str]], position: tuple[int, int]):
+    row, col = position
+    return row >= 0 and col >= 0 and row < len(grid) and col < len(grid[0])
 
-    @classmethod
-    def new(cls, width: int, height: int) -> Self:
-        grid = [([None] * height)] * width
-        return cls(grid)
 
-    def __init__(self, grid):
-        self._grid = grid
+def at_position(grid: list[list[str]], position: tuple[int, int]) -> str:
+    row, col = position
+    return grid[row][col]
 
-    def __repr__(self):
-        cols = []
-        for y in range(len(self._grid[0])):
-            row = []
-            for x in range(len(self._grid)):
-                row.append(self._grid[x][y])
 
-            cols.append(",".join([str(x) for x in row]))
+def print_grid(grid):
+    for row in grid:
+        print("".join(row))
 
-        return "\n".join(cols)
+
+class Direction(enum.Enum):
+    UP = enum.auto()
+    DOWN = enum.auto()
+    LEFT = enum.auto()
+    RIGHT = enum.auto()
+
+    def turn_right(self):
+        match self:
+            case Direction.UP:
+                return Direction.RIGHT
+            case Direction.RIGHT:
+                return Direction.DOWN
+            case Direction.DOWN:
+                return Direction.LEFT
+            case Direction.LEFT:
+                return Direction.UP
+
+
+def move_pos(position: tuple[int, int], dir: Direction) -> tuple[int, int]:
+    match dir:
+        case Direction.UP:
+            return (position[0] - 1, position[1])
+        case Direction.DOWN:
+            return (position[0] + 1, position[1])
+        case Direction.LEFT:
+            return (position[0], position[1] - 1)
+        case Direction.RIGHT:
+            return (position[0], position[1] + 1)
