@@ -1,5 +1,5 @@
 import enum
-from typing import Iterator, Self
+from typing import Iterator
 
 
 def window(l: list, size: int) -> Iterator[list[int]]:
