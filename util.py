@@ -1,5 +1,20 @@
 import enum
-from typing import Self
+from typing import Iterator, Self
+
+
+def window(l: list, size: int) -> Iterator[list[int]]:
+    """Iterate through all sublists of a list"""
+    for i in range(len(l) - size + 1):
+        yield l[i : i + 2]
+
+
+def between(lower: int, upper: int, number: int) -> bool:
+    return lower <= number and number <= upper
+
+
+def yoink(l: list, index: int) -> list:
+    """Remove element at index and return the list (like pop but functional)"""
+    return l[:index] + l[index + 1 :]
 
 
 def in_bounds(grid: list[list[str]], position: tuple[int, int]):
