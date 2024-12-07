@@ -1,7 +1,7 @@
 import re
 
 
-with open("day-3.txt") as f:
+with open("day3.txt") as f:
     puzzle = f.read()
 
 part_1 = sum(

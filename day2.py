@@ -1,7 +1,7 @@
 from typing import Generator, Iterator
 from util import between, window, yoink
 
-with open("day-2.txt") as f:
+with open("day2.txt") as f:
     puzzle = f.read()
 
 reports = [list(map(int, r.split(" "))) for r in puzzle.splitlines()]

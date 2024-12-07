@@ -1,6 +1,6 @@
 phrase = "XMAS"
 
-with open("day-4.txt") as f:
+with open("day4.txt") as f:
     puzzle = f.read()
 
 

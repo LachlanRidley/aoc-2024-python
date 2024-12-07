@@ -1,4 +1,4 @@
-with open("day-1.txt") as f:
+with open("day1.txt") as f:
     puzzle = f.read()
 
 elems = [line.split() for line in puzzle.split("\n")]

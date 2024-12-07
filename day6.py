@@ -3,7 +3,7 @@ from typing import Literal
 from util import Direction, at_position, in_bounds, move_pos
 
 
-with open("day-6.txt") as f:
+with open("day6.txt") as f:
     puzzle = f.read()
 
 

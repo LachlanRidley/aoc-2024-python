@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 
-with open("day-5.txt") as f:
+with open("day5.txt") as f:
     puzzle = f.read()
 
 # make rules look up
