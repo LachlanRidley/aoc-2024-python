@@ -17,7 +17,7 @@ def yoink(l: list, index: int) -> list:
     return l[:index] + l[index + 1 :]
 
 
-def in_bounds(grid: list[list[str]], position: tuple[int, int]):
+def in_bounds(grid: list[list], position: tuple[int, int]):
     row, col = position
     return row >= 0 and col >= 0 and row < len(grid) and col < len(grid[0])
 
