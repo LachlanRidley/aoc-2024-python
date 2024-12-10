@@ -1,47 +1,61 @@
 from typing import Literal
 
-from util import Direction, at_position, in_bounds, move_pos
+from util import Direction
+from vector import Vector
 
 
 with open("day6.txt") as f:
     puzzle = f.read()
 
-
-facility = [list(r) for r in puzzle.splitlines()]
+facility = {}
 guard_dir = Direction.UP
 original_start_dir = Direction.UP
-for i, row in enumerate(facility):
-    for j, tile in enumerate(row):
+for y, row in enumerate(puzzle.splitlines()):
+    for x, tile in enumerate(row):
+        pos = Vector(x, y)
         if tile == "^":
-            guard_pos = (i, j)
+            guard_pos = pos
             original_start_pos = guard_pos
-            facility[i][j] = "."
-            break
+            facility[pos] = "."
+        else:
+            facility[pos] = tile
+
+
+def move_pos(v: Vector, dir: Direction) -> Vector:
+    match dir:
+        case Direction.UP:
+            return Vector(v.x, v.y - 1)
+        case Direction.DOWN:
+            return Vector(v.x, v.y + 1)
+        case Direction.LEFT:
+            return Vector(v.x - 1, v.y)
+        case Direction.RIGHT:
+            return Vector(v.x + 1, v.y)
 
 
 def walk(
-    grid: list[list[str]],
-    pos: tuple[int, int],
+    grid: dict[Vector, str],
+    pos: Vector,
     dir: Direction,
-    obstruction: tuple[int, int] | None = None,
+    obstruction: Vector | None = None,
 ) -> (
     tuple[Literal["escaped"]]
     | tuple[Literal["turned"], Direction]
-    | tuple[Literal["moved"], tuple[int, int]]
+    | tuple[Literal["moved"], Vector]
 ):
     next_pos = move_pos(pos, dir)
 
-    if not in_bounds(grid, next_pos):
+    if next_pos not in grid:
         return ("escaped",)
 
-    if at_position(grid, next_pos) == "#" or next_pos == obstruction:
+    if grid[next_pos] == "#" or next_pos == obstruction:
         dir = dir.turn_right()
         return ("turned", dir)
 
     return ("moved", next_pos)
 
 
-visited_tiles = set([guard_pos])
+visited_locations = set([guard_pos])
 while True:
     move = walk(facility, guard_pos, guard_dir)
     if move[0] == "escaped":
@@ -51,13 +65,12 @@ while True:
         continue
     elif move[0] == "moved":
         guard_pos = move[1]
-        visited_tiles.add(guard_pos)
-visited = len(visited_tiles)
+        visited_locations.add(guard_pos)
 
-print(f"Part 1: {visited}")
+print(f"Part 1: {len(visited_locations)} | expected 5086")
 
 valid_obstructions = 0
-for obstruction in visited_tiles:
+for obstruction in visited_locations:
     if obstruction == original_start_pos:
         continue
 
@@ -79,4 +92,4 @@ for obstruction in visited_tiles:
             break
         visited.add((guard_pos, guard_dir))
 
-print(f"Part 2: {valid_obstructions}")
+print(f"Part 2: {valid_obstructions} | expected 1770")
