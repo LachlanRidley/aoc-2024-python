@@ -1,5 +1,14 @@
 import enum
-from typing import Iterator
+from typing import Iterator, Self
+
+
+class Tree[T]:
+    value: T
+    children: set[Self]
+
+    def __init__(self, loc):
+        self.value = loc
+        self.children = set()
 
 
 def window(li: list, size: int) -> Iterator[list[int]]:

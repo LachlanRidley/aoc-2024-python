@@ -1,52 +1,37 @@
 import functools
-from typing import Iterable
+
 
 with open("day11.txt") as f:
     puzzle = f.read()
-# puzzle = "125 17"
 
 stones = list(map(int, puzzle.split(" ")))
 
 
-def flatten(xs):
-    for x in xs:
-        if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
-            yield from flatten(x)
-        else:
-            yield x
-
-
 @functools.cache
-def evolve(stone: int) -> int | list[int]:
-    if stone == 0:
+def build_tree(stone: int, depth: int) -> int:
+    if depth == 0:
         return 1
+
+    if stone == 0:
+        child_count = build_tree(1, depth - 1)
     elif len(str(stone)) % 2 == 0:
         s = str(stone)
         first, second = s[: len(s) // 2], s[len(s) // 2 :]
-        return [int(first), int(second)]
+        child_count = build_tree(int(first), depth - 1) + build_tree(
+            int(second), depth - 1
+        )
     else:
-        return stone * 2024
+        child_count = build_tree(stone * 2024, depth - 1)
+
+    return child_count
 
 
-def chunks(lst: list[int], n: int) -> Iterable[list[int]]:
-    """Yield successive n-sized chunks from lst."""
-    for i in range(0, len(lst), n):
-        yield lst[i : i + n]
+def blink(stones: list[int], depth: int) -> list[int]:
+    return sum([build_tree(stone, depth) for stone in stones])
 
 
-def blink(stones: list[int]) -> list[int]:
-    stones = map(evolve, stones)
-    return [s for s in flatten(stones)]
+part_1 = blink(stones, 25)
+print(f"Part 1: {part_1} | expected 186424")
 
-
-for i in range(25):
-    print(i)
-    stones = blink(stones)
-
-print(f"Part 1: {len(stones)}")
-
-for i in range(50):
-    print(i)
-    stones = blink(stones)
-
-print(f"Part 2: {len(stones)}")
+part_2 = blink(stones, 75)
+print(f"Part 2: {part_2} | expected 219838428124832")

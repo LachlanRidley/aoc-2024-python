@@ -1,5 +1,4 @@
-from typing import Self
-from util import in_bounds
+from util import Tree, in_bounds
 
 
 with open("day10.txt") as f:
@@ -48,15 +47,6 @@ for trailhead in trailheads:
 print(f"Part 1: {sum(scores)}")
 
 
-class Tree:
-    loc: tuple[int, int]
-    walks: set[Self]
-
-    def __init__(self, loc):
-        self.loc = loc
-        self.walks = set()
-
-
 def build_tree(
     loc: tuple[int, int],
     visited: set[tuple[int, int]],
@@ -66,16 +56,16 @@ def build_tree(
     tree = Tree(loc)
     for candidate in candidates:
         sub_tree = build_tree(candidate, visited.union(loc), grid)
-        tree.walks.add(sub_tree)
+        tree.children.add(sub_tree)
     return tree
 
 
 def count_trails(tree: Tree, depth: int):
-    loc = tree.loc
+    loc = tree.value
     if grid[loc[0]][loc[1]] == 9:
         return 1
 
-    return sum([count_trails(walk, depth + 1) for walk in tree.walks])
+    return sum([count_trails(walk, depth + 1) for walk in tree.children])
 
 
 combined_ratings = 0
