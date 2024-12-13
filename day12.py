@@ -31,9 +31,6 @@ class Region:
     plots: set[Vector]
 
 
-# print_grid(grid)
-
-
 def flood_fill(grid: dict[Vector, Any], start: Vector) -> set[Vector]:
     candidates = set([start])
     flooded = set()
