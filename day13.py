@@ -2,7 +2,8 @@ from dataclasses import dataclass
 import re
 from rich import print
 from itertools import zip_longest
-from z3 import Ints, Solver
+
+from sympy import Eq, solve, symbols
 
 from vector import Vector
 
@@ -72,18 +73,21 @@ def solve_with_urgh_mathematics(
     if big_prizes:
         prize_x += 10000000000000
         prize_y += 10000000000000
-    solv = Solver()
-    a, b = Ints("a b")
-    solv.add(
-        a * game.button_a.x + b * game.button_b.x == prize_x,
-        a * game.button_a.y + b * game.button_b.y == prize_y,
+    (
+        a,
+        b,
+    ) = symbols("a b")
+
+    solution = solve(
+        [
+            Eq(a * game.button_a.x + b * game.button_b.x, prize_x),
+            Eq(a * game.button_a.y + b * game.button_b.y, prize_y),
+        ],
+        syms=(a, b),
     )
-    try:
-        solv.check()
-        sol = solv.model()
-        return (sol[a].as_long(), sol[b].as_long())
-    except:  # noqa: E722
-        return None
+    if solution[a].is_integer and solution[b].is_integer:
+        return (solution[a], solution[b])
+    return None
 
 
 def token_cost_of_button_combo(combo: tuple[int, int]) -> int:
