@@ -1,5 +1,5 @@
 import enum
-from typing import Any, Iterator, Self
+from typing import Any, Dict, Iterator, Self
 
 from vector import Vector
 
@@ -94,3 +94,38 @@ def move_pos(v: Vector, dir: Direction) -> Vector:
             return Vector(v[0] - 1, v[1])
         case Direction.RIGHT:
             return Vector(v[0] + 1, v[1])
+
+
+def make_empty_grid(width: int, height: int) -> Dict[Vector, str]:
+    grid = {}
+    for y in range(height):
+        for x in range(width):
+            v = Vector(int(x), int(y))
+            grid[v] = "."
+    return grid
+
+
+def find_shortest_path(
+    grid: Dict[Vector, str], start: Vector, end: Vector
+) -> int | None:
+    weights = {start: 0}
+    unvisited_set = set([start])
+    visited_set = set()
+
+    while unvisited_set:
+        next = min(unvisited_set, key=lambda x: weights[x])
+        unvisited_set.remove(next)
+        visited_set.add(next)
+        neighbours = filter(
+            lambda x: x in grid and grid[x] != "#", next.get_direct_neighbours()
+        )
+        for neighbour in neighbours:
+            new_weight = weights[next] + 1
+            if neighbour not in weights or new_weight < weights[neighbour]:
+                weights[neighbour] = weights[next] + 1
+                unvisited_set.add(neighbour)
+
+    if end in visited_set:
+        return weights[end]
+    else:
+        return None
