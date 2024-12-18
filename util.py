@@ -1,5 +1,7 @@
 import enum
-from typing import Iterator, Self
+from typing import Any, Iterator, Self
+
+from vector import Vector
 
 
 class Tree[T]:
@@ -36,9 +38,19 @@ def at_position(grid: list[list[str]], position: tuple[int, int]) -> str:
     return grid[row][col]
 
 
-def print_grid(grid):
-    for row in grid:
-        print("".join(row))
+def get_height(grid: dict[Vector, any]) -> int:
+    return max([v.y for v in grid])
+
+
+def get_width(grid: dict[Vector, any]) -> int:
+    return max([v.x for v in grid])
+
+
+def print_grid(grid: dict[Vector, Any]) -> None:
+    for y in range(get_height(grid) + 1):
+        for x in range(get_width(grid) + 1):
+            print(grid[Vector(x, y)], end="")
+        print()
 
 
 class Direction(enum.Enum):
@@ -58,14 +70,27 @@ class Direction(enum.Enum):
             case Direction.LEFT:
                 return Direction.UP
 
+    @classmethod
+    def from_str(cls, s: str) -> Self:
+        match s:
+            case "^":
+                return Direction.UP
+            case "v":
+                return Direction.DOWN
+            case ">":
+                return Direction.RIGHT
+            case "<":
+                return Direction.LEFT
+        raise RuntimeError(f"invalid direction string = {s}")
 
-def move_pos(position: tuple[int, int], dir: Direction) -> tuple[int, int]:
+
+def move_pos(v: Vector, dir: Direction) -> Vector:
     match dir:
         case Direction.UP:
-            return (position[0] - 1, position[1])
+            return Vector(v[0], v[1] - 1)
         case Direction.DOWN:
-            return (position[0] + 1, position[1])
+            return Vector(v[0], v[1] + 1)
         case Direction.LEFT:
-            return (position[0], position[1] - 1)
+            return Vector(v[0] - 1, v[1])
         case Direction.RIGHT:
-            return (position[0], position[1] + 1)
+            return Vector(v[0] + 1, v[1])
