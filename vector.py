@@ -12,3 +12,10 @@ class Vector(NamedTuple):
             Vector(self.x, self.y - 1),
             Vector(self.x, self.y + 1),
         }
+
+    def __add__(self, other) -> Self:
+        from util import Direction, move_pos
+
+        if isinstance(other, Direction):
+            return move_pos(self, other)
+        raise NotImplementedError()

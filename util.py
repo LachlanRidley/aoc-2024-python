@@ -1,5 +1,5 @@
 import enum
-from typing import Any, Dict, Iterator, Self
+from typing import Any, Dict, Iterator, List, Self, Type, TypeVar
 
 from vector import Vector
 
@@ -11,6 +11,13 @@ class Tree[T]:
     def __init__(self, loc):
         self.value = loc
         self.children = set()
+
+
+T = TypeVar("T")
+
+
+def flatten(xss: List[List[Type[T]]]) -> List[T]:
+    return [x for xs in xss for x in xs]
 
 
 def window(li: list, size: int) -> Iterator[list[int]]:
@@ -59,6 +66,17 @@ class Direction(enum.Enum):
     LEFT = enum.auto()
     RIGHT = enum.auto()
 
+    def turn_left(self):
+        match self:
+            case Direction.UP:
+                return Direction.LEFT
+            case Direction.RIGHT:
+                return Direction.UP
+            case Direction.DOWN:
+                return Direction.RIGHT
+            case Direction.LEFT:
+                return Direction.DOWN
+
     def turn_right(self):
         match self:
             case Direction.UP:
@@ -82,6 +100,17 @@ class Direction(enum.Enum):
             case "<":
                 return Direction.LEFT
         raise RuntimeError(f"invalid direction string = {s}")
+
+    def to_str(self) -> str:
+        match self:
+            case Direction.UP:
+                return "^"
+            case Direction.DOWN:
+                return "v"
+            case Direction.RIGHT:
+                return ">"
+            case Direction.LEFT:
+                return "<"
 
 
 def move_pos(v: Vector, dir: Direction) -> Vector:
